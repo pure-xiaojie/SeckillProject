@@ -1,0 +1,30 @@
+@charset "utf-8";
+*{
+    padding: 0;
+    margin: 0;
+
+}
+body{
+    background: url("/img/back2.jpeg") no-repeat top center fixed;
+    background-size: 100%;
+}
+.title{
+    width: 100%;
+    text-align: center;
+}
+.content{
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin-left: -180px;
+    margin-top: -200px;
+    width: 360px;
+    height: 265px;
+    padding: 25px;
+    border-radius: 10px;
+    box-shadow: 0px 2px 38px #cccccc;
+    background-color:#ffffff ;
+}
+#login{
+    width:100%;
+}
