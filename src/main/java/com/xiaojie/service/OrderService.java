@@ -4,6 +4,7 @@ import com.xiaojie.pojo.GoodsVo;
 import com.xiaojie.pojo.OrderInfo;
 import com.xiaojie.pojo.SeckillOrder;
 import com.xiaojie.pojo.User;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface OrderService {
     /**
@@ -20,5 +21,13 @@ public interface OrderService {
      * @param goods
      * @return
      */
+    @Transactional
     public OrderInfo createOrder(User user, GoodsVo goods);
+
+    /**
+     * 根据订单id获取订单
+     * @param orderId
+     * @return
+     */
+    public OrderInfo getByOrderId(long orderId);
 }

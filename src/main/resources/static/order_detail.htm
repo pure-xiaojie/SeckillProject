@@ -47,11 +47,11 @@
             </div>
             <div class="count">
                 <span>收货人：</span>
-                <span>XXX  1383838483</span>
+                <span>XXX  188989653265</span>
             </div>
             <div class="count">
                 <span>收货地址：</span>
-                <span>北京市昌平区回龙观龙博一区</span>
+                <span>湖南省长沙市湖南大学</span>
             </div>
 
                 <button class="btn btn-primary btn-block" type="submit" id="payButton">立即支付</button>
@@ -61,27 +61,16 @@
 </body>
 </html>
 <script>
-    function render(detail){
-        var goods = detail.goods;
-        var order = detail.order;
-        $("#goodsName").text(goods.goodsName);
-        $("#goodsImg").attr("src", goods.goodsImg);
-        $("#orderPrice").text(order.goodsPrice);
-        $("#createDate").text(new Date(order.createDate).format("yyyy-MM-dd hh:mm:ss"));
-        var status = "";
-        if(order.status == 0){
-            status = "未支付"
-        }else if(order.status == 1){
-            status = "待发货";
-        }
-        $("#orderStatus").text(status);
-
-    }
-
+    /**
+     * 页面一加载即调用
+     */
     $(function(){
         getOrderDetail();
-    })
+    });
 
+    /**
+     * 发送ajax请求获取数据
+     */
     function getOrderDetail(){
         var orderId = g_getQueryString("orderId");
         $.ajax({
@@ -107,6 +96,24 @@
         });
     }
 
+    /**
+     * 渲染页面
+     * @param detail
+     */
+    function render(detail){
+        var goods = detail.goods;
+        var order = detail.order;
+        $("#goodsName").text(goods.goodsName);
+        $("#goodsImg").attr("src", goods.goodsImg);
+        $("#orderPrice").text(order.goodsPrice);
+        $("#createDate").text(new Date(order.createDate).format("yyyy-MM-dd hh:mm:ss"));
+        var status = "";
+        if(order.status == 0){
+            status = "未支付"
+        }else if(order.status == 1){
+            status = "待发货";
+        }
+        $("#orderStatus").text(status);
 
-
+    }
 </script>

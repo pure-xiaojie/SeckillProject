@@ -27,7 +27,8 @@
                     <span class="price1" th:text="${goods.seckillPrice}+'元  '"></span>
                     <del><span class="price2" th:text="${goods.goodsPrice}+'元'"></span></del>
                 </p>
-                <a th:href="'/goods/detail/'+ ${goods.id}">
+                <!-- 区别：下处为静态化处理  a th:href="'/goods/detail/'+ ${goods.id}"-->
+                <a th:href="'/goods_detail.htm?goodsId='+${goods.id}">
                     <button class="btn btn-default" type="submit">进入详情页...</button>
                 </a>
 

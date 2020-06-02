@@ -34,5 +34,13 @@ public interface OrderMapper {
      * @param seckillOrder
      */
     @Insert("insert into seckill_order(user_id,goods_id,order_id)values(#{userId},#{goodsId},#{orderId}) ")
-    public void insertSeckillOrder(SeckillOrder seckillOrder);
+    public int insertSeckillOrder(SeckillOrder seckillOrder);
+
+    /**
+     * 根据订单id获取订单信息
+     * @param orderId
+     * @return
+     */
+    @Select("select * from order_info where id = #{orderId}")
+    public OrderInfo getOrderById(@Param("orderId") long orderId);
 }

@@ -1,6 +1,5 @@
 package com.xiaojie.service.impl;
 
-import com.xiaojie.dao.GoodsMapper;
 import com.xiaojie.pojo.GoodsVo;
 import com.xiaojie.pojo.OrderInfo;
 import com.xiaojie.pojo.User;
@@ -34,9 +33,10 @@ public class SeckillServiceImpl implements SeckillService {
     @Transactional
     public OrderInfo seckill(User user, GoodsVo goods) {
         //减库存
-        goodsService.reduceStock(goods);
-
-        //创建订单:order_info  seckill_order
-        return orderService.createOrder(user,goods);
+        int flag = goodsService.reduceStock(goods);
+        if(flag == 1)
+            //创建订单:order_info  seckill_order
+            return orderService.createOrder(user,goods);
+        return null;
     }
 }

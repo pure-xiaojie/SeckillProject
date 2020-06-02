@@ -23,5 +23,5 @@ public interface GoodsService {
      * 减少库存
      * @param goods
      */
-    public void reduceStock(GoodsVo goods);
+    public int reduceStock(GoodsVo goods);
 }

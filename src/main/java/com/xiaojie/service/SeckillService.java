@@ -3,6 +3,7 @@ package com.xiaojie.service;
 import com.xiaojie.pojo.GoodsVo;
 import com.xiaojie.pojo.OrderInfo;
 import com.xiaojie.pojo.User;
+import org.springframework.transaction.annotation.Transactional;
 
 public interface SeckillService {
     /**
@@ -11,5 +12,6 @@ public interface SeckillService {
      * @param goodsVo
      * @return
      */
+    @Transactional
     public OrderInfo seckill(User user, GoodsVo goodsVo);
 }

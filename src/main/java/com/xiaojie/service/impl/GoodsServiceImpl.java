@@ -41,7 +41,8 @@ public class GoodsServiceImpl implements GoodsService {
      * 减少库存
      * @param goods
      */
-    public void reduceStock(GoodsVo goods) {
-        goodsMapper.reduceStock(goods.getId());
+    public int reduceStock(GoodsVo goods) {
+        long goodsId = goods.getId();
+        return goodsMapper.reduceStock(goodsId);
     }
 }

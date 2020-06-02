@@ -34,6 +34,6 @@ public interface GoodsMapper {
      * 减少商品的库存
      * @param goodsId
      */
-    @Update("update seckill_goods set stock_count = stock_count-1 where goods_id = #{goodsId}")
-    public void reduceStock(@Param("goodsId")long goodsId);
+    @Update("update seckill_goods set stock_count = stock_count-1 where goods_id = #{goodsId} and stock_count > 0")
+    public int reduceStock(@Param("goodsId")long goodsId);
 }

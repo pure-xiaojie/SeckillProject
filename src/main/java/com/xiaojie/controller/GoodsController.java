@@ -1,9 +1,11 @@
 package com.xiaojie.controller;
 
+import com.xiaojie.pojo.GoodsDetail;
 import com.xiaojie.pojo.GoodsVo;
 import com.xiaojie.pojo.User;
 import com.xiaojie.redis.GoodsKey;
 import com.xiaojie.redis.RedisService;
+import com.xiaojie.result.Result;
 import com.xiaojie.service.GoodsService;
 import com.xiaojie.service.UserService;
 import org.apache.commons.lang3.StringUtils;
@@ -140,5 +142,43 @@ public class GoodsController {
             redisService.set(GoodsKey.getGoodsDetail, ""+goodsId, html , 60);
         }
         return html;
+    }
+
+    /**
+     * 商品详情，对页面进行静态化处理
+     * @param goodsId
+     * @param user
+     * @return
+     */
+    @RequestMapping("/detailStatic/{goodsId}")
+    @ResponseBody
+    public Result<GoodsDetail> detailStatic(@PathVariable("goodsId")long goodsId , User user ) {
+        //根据id查询秒杀商品
+        GoodsVo goods = goodsService.getGoodsVoById(goodsId);
+        //获取开始、介绍、现在的时间,转换为毫秒
+        long start = goods.getStartDate().getTime();
+        long end = goods.getEndDate().getTime();
+        long now = System.currentTimeMillis();
+        //秒杀状态、倒计时
+        int seckillStatus = 0;
+        int reSeconds = 0;
+
+        if(now < start) { //秒杀未开始，倒计时
+            seckillStatus = 0;
+            reSeconds = (int)((start-now)/1000);
+        } else if(now > end) {  //秒杀已结束
+            seckillStatus = 2;
+            reSeconds = -1;
+        } else {   //秒杀进行中
+            seckillStatus = 1;
+            reSeconds = 0;
+        }
+        GoodsDetail detail = new GoodsDetail();
+        detail.setGoods(goods);
+        detail.setUser(user);
+        detail.setRemainSeconds(reSeconds);
+        detail.setSeckillStatus(seckillStatus);
+
+        return Result.success(detail);
     }
 }
