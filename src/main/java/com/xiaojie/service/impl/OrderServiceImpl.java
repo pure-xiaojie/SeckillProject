@@ -62,16 +62,16 @@ public class OrderServiceImpl implements OrderService {
         orderInfo.setOrderChannel(1);
         orderInfo.setStatus(0);
         orderInfo.setUserId((long)user.getId());
-        long orderId = orderMapper.insert(orderInfo);
+        orderMapper.insert(orderInfo);
 
         //seckillOrder
         SeckillOrder seckillOrder = new SeckillOrder();
         seckillOrder.setGoodsId(goods.getId());
-        seckillOrder.setOrderId(orderId);
+        seckillOrder.setOrderId(orderInfo.getId());
         seckillOrder.setUserId((long)user.getId());
         orderMapper.insertSeckillOrder(seckillOrder);
 
-        //把订单放入缓存
+        //把订单放入缓存,过期时间1小时
         redisService.set(OrderKey.getOrderByUidOid,""+user.getId() + "_"+goods.getId(),seckillOrder,3600);
         return orderInfo;
     }

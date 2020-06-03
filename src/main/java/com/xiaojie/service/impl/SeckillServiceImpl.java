@@ -2,7 +2,10 @@ package com.xiaojie.service.impl;
 
 import com.xiaojie.pojo.GoodsVo;
 import com.xiaojie.pojo.OrderInfo;
+import com.xiaojie.pojo.SeckillOrder;
 import com.xiaojie.pojo.User;
+import com.xiaojie.redis.RedisService;
+import com.xiaojie.redis.SeckillKey;
 import com.xiaojie.service.GoodsService;
 import com.xiaojie.service.OrderService;
 import com.xiaojie.service.SeckillService;
@@ -24,6 +27,9 @@ public class SeckillServiceImpl implements SeckillService {
     @Autowired
     private OrderService orderService;
 
+    @Autowired
+    private RedisService redisService;
+
     /**
      * 秒杀业务：减库存下订单，写入订单
      * @param user
@@ -37,6 +43,44 @@ public class SeckillServiceImpl implements SeckillService {
         if(flag == 1)
             //创建订单:order_info  seckill_order
             return orderService.createOrder(user,goods);
-        return null;
+        else {
+            //已无库存
+            setGoodsOver(goods.getId());
+            return null;
+        }
     }
+
+    /**
+     * 轮询查询是否下单成功
+     * @param id
+     * @param goodsId
+     * @return
+     */
+    public long getSeckillResult(int id, long goodsId) {
+        SeckillOrder order = orderService.getOrderByUserIdGoodsId(id, goodsId);
+        if(order != null) {
+            return order.getOrderId();
+        } else {
+            boolean isOver = getGoodsOver(goodsId);
+            if(isOver) {
+                return -1;
+            }else {
+                return 0;
+            }
+        }
+    }
+
+    /*
+     * 秒杀商品结束标记
+     * */
+    private void setGoodsOver(Long goodsId) {
+        redisService.set(SeckillKey.isGoodsOver, ""+goodsId, true , 3600);
+    }
+    /*
+     * 查看秒杀商品是否已经结束
+     * */
+    private boolean getGoodsOver(long goodsId) {
+        return redisService.exists(SeckillKey.isGoodsOver, ""+goodsId);
+    }
+
 }

@@ -14,4 +14,12 @@ public interface SeckillService {
      */
     @Transactional
     public OrderInfo seckill(User user, GoodsVo goodsVo);
+
+    /**
+     * 轮询查询是否下单成功
+     * @param id
+     * @param goodsId
+     * @return
+     */
+    public long getSeckillResult(int id, long goodsId);
 }
