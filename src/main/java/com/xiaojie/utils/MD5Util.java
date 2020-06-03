@@ -26,12 +26,15 @@ public class MD5Util {
     }
 
     public static String inputPassToDbPass(String inputPass, String saltDB) {
+        //MD5密码生成：salt：9d5b364d
         String formPass = inputPassToFormPass(inputPass);
+        //数据库密码生成：salt：1l2j3g
         String dbPass = formPassToDBPass(formPass, saltDB);
         return dbPass;
     }
 
     public static void main(String[] args) {
-        System.out.println(inputPassToDbPass("12345678", "9d5b364d"));//cd235d8b395725d4c3352e9689f346b6
+        //3457ceaeba3426466887369f1a1f7a88
+        System.out.println(inputPassToFormPass("123456"));
     }
 }
