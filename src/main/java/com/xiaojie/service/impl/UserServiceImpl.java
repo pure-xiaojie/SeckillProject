@@ -61,7 +61,7 @@ public class UserServiceImpl implements UserService {
      * @param token
      * @return
      */
-    public Object getByToken(HttpServletResponse response, String token) {
+    public User getByToken(HttpServletResponse response, String token) {
         if(StringUtils.isEmpty(token)) {
             return null;
         }

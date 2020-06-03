@@ -9,6 +9,8 @@ import com.xiaojie.redis.SeckillKey;
 import com.xiaojie.service.GoodsService;
 import com.xiaojie.service.OrderService;
 import com.xiaojie.service.SeckillService;
+import com.xiaojie.utils.MD5Util;
+import com.xiaojie.utils.UUIDUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -82,5 +84,34 @@ public class SeckillServiceImpl implements SeckillService {
     private boolean getGoodsOver(long goodsId) {
         return redisService.exists(SeckillKey.isGoodsOver, ""+goodsId);
     }
+
+
+    /**
+     * 秒杀地址生成
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    public String createPath(User user, long goodsId) {
+        String str = MD5Util.md5(UUIDUtil.uuid() + "987655");
+        redisService.set(SeckillKey.getSeckillPath,""+user.getId()+"_"+goodsId,str,60);
+        return str;
+    }
+
+    /**
+     * 秒杀地址验证
+     * @param user
+     * @param goodsId
+     * @param path
+     * @return
+     */
+    public boolean checkPath(User user, long goodsId, String path) {
+        if(user == null || path == null) {
+            return false;
+        }
+        String pathOld = redisService.get(SeckillKey.getSeckillPath, ""+user.getId() + "_"+ goodsId, String.class);
+        return path.equals(pathOld);
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package com.xiaojie.controller;
 
+import com.xiaojie.access.AccessLimit;
 import com.xiaojie.pojo.GoodsVo;
 import com.xiaojie.pojo.OrderInfo;
 import com.xiaojie.pojo.SeckillOrder;
@@ -17,12 +18,8 @@ import org.springframework.beans.factory.InitializingBean;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -92,7 +89,7 @@ public class SeckillController implements InitializingBean {
 
     /**
      * 2.0版
-     * QPS:1306
+     * QPS:1206
      * 线程：5000 * 10
      * 订单页面静态化
      * */
@@ -124,12 +121,20 @@ public class SeckillController implements InitializingBean {
      * 线程：5000 * 10
      * 加入消息队列
      * */
-    @RequestMapping(value="/seckill_mq")
+    @RequestMapping(value="/{path}/seckill_mq",method = RequestMethod.POST)
     @ResponseBody
-    public Result<Integer> seckillMq(User user, @RequestParam("goodsId")long goodsId) {
+    public Result<Integer> seckillMq(User user, @RequestParam("goodsId")long goodsId,
+                                     @PathVariable("path") String path) {
         if(user == null) {
             return Result.error(CodeMsg.SESSION_ERROR);
         }
+
+        //验证path
+        boolean checkPath = seckillService.checkPath(user, goodsId, path);
+        if(!checkPath) {
+            return Result.error(CodeMsg.REQUEST_ILLEGAL);
+        }
+
         //内存标记，减少redis访问
         boolean over = localOverMap.get(goodsId);
         if(over) {
@@ -186,5 +191,23 @@ public class SeckillController implements InitializingBean {
         }
         long result = seckillService.getSeckillResult(user.getId(), goodsId);
         return Result.success(result);
+    }
+
+    /**
+     * 获取秒杀地址
+     * 接口限流：5秒内最多访问5次，并需要为登录状态
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    @AccessLimit(seconds=5, maxCount=5, needLogin=true)
+    @RequestMapping(value = "/path", method = RequestMethod.GET)
+    @ResponseBody
+    public Result<String> getSeckillPath(User user, @RequestParam("goodsId") long goodsId) {
+        if (user == null) {
+            return Result.error(CodeMsg.USER_NO_LOGIN);
+        }
+        String path = seckillService.createPath(user, goodsId);
+        return Result.success(path);
     }
 }

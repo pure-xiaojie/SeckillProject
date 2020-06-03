@@ -1,6 +1,7 @@
 package com.xiaojie.service;
 
 import com.xiaojie.pojo.LoginParam;
+import com.xiaojie.pojo.User;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -21,5 +22,5 @@ public interface UserService {
      * @param token
      * @return
      */
-    public Object getByToken(HttpServletResponse response, String token);
+    public User getByToken(HttpServletResponse response, String token);
 }

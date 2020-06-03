@@ -22,4 +22,21 @@ public interface SeckillService {
      * @return
      */
     public long getSeckillResult(int id, long goodsId);
+
+    /**
+     * 秒杀地址生成
+     * @param user
+     * @param goodsId
+     * @return
+     */
+    public String createPath(User user, long goodsId);
+
+    /**
+     * 秒杀地址验证
+     * @param user
+     * @param goodsId
+     * @param path
+     * @return
+     */
+    public boolean checkPath(User user, long goodsId,String path);
 }
